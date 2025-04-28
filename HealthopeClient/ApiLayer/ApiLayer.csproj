@@ -184,12 +184,12 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="wwwroot\css\app.2cf79ad6.css" />
+    <Content Include="wwwroot\css\app.2eb0d3aa.css" />
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\app.706add0b.js" />
-    <Content Include="wwwroot\js\app.706add0b.js.map" />
-    <Content Include="wwwroot\js\chunk-vendors.4060809e.js" />
-    <Content Include="wwwroot\js\chunk-vendors.4060809e.js.map" />
+    <Content Include="wwwroot\js\app.03a875e5.js" />
+    <Content Include="wwwroot\js\app.03a875e5.js.map" />
+    <Content Include="wwwroot\js\chunk-vendors.aee3414f.js" />
+    <Content Include="wwwroot\js\chunk-vendors.aee3414f.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -12,5 +12,4 @@ export default function setupMock() {
     mockAdapter.onPost("/api/Login/LoggedOut").reply(200, {
         ErrorCode: 1
     })
-
 }
