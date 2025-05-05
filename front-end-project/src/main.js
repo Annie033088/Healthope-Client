@@ -1,20 +1,28 @@
 import Vue from 'vue'
-//import VueRouter from "vue-router";
-//import router from './router';
+import VueRouter from "vue-router";
+import router from './router';
 import App from './App.vue'
-import axios from 'axios';
+// eslint-disable-next-line no-unused-vars
+import axios from './plugins/axios';
 import {errorCodeDefine, errorCodeToMessage} from './utils/globalSetting';
-import setupMock from './mock/mock.js'
 
-setupMock();
+if (process.env.NODE_ENV === 'development') {
+  await import('./mock/mock.js')
+}
+
 Vue.prototype.$errorCodeDefine = errorCodeDefine;
 Vue.prototype.$errorCodeToMessage = errorCodeToMessage;
-Vue.prototype.$axios = axios;
-Vue.config.productionTip = false
-//Vue.use(VueRouter);
+Vue.prototype.$notificationBox = Vue.observable({
+  notificationBoxFlag: false,
+  notificationBoxTitle: "",
+  notificationBoxErrorCode: 0,
+  notificationBoxCancelFlag: false
+});
+Vue.config.productionTip = false;
+Vue.use(VueRouter);
 
 
 new Vue({
-  //router,
+  router,
   render: h => h(App),
 }).$mount('#app')

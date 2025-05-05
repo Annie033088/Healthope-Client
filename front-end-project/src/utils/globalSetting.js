@@ -24,22 +24,34 @@ export const errorCodeDefine = {
     NoPermission: 7,
 
     //使用者未登入
-    UserNotLogged: 8,
+    UserNotLogin: 8,
 
     //登入失敗
     LoginFailed: 9,
 
-    //密碼輸入錯誤
-    PasswordEnterIncorrectly: 10,
-
     //創建失敗
-    CreateFailed: 11,
+    CreateFailed: 10,
 
     //修改失敗
-    ModifiedFailed: 12,
+    ModifiedFailed: 11,
 
     //刪除失敗
-    DeleteFailed: 13
+    DeleteFailed: 12,
+
+    //取得特定資料失敗
+    GetFailed: 13,
+
+    // 資料已被異動
+    HasBeenModified: 14,
+
+    // 超級管理員不得修改
+    ModifySuperAdminFailed: 15,
+
+    // 手機重複
+    DuplicatePhone: 16,
+
+    // 帳號重複
+    DuplicateAccount: 17,
 };
 
 //設定errorCode對應資料
@@ -48,7 +60,7 @@ export function errorCodeToMessage(errorCode) {
 
     switch (errorCode) {
         case 1:
-            message = "請求成功";
+            message = "成功!";
             return message;
         case 2:
             message = "您的帳號已被其他使用者踢出";
@@ -63,7 +75,7 @@ export function errorCodeToMessage(errorCode) {
             message = "請求格式錯誤或無效數據";
             return message;
         case 6:
-            message = "伺服器錯誤";
+            message = "伺服器錯誤，請再試一次";
             return message;
         case 7:
             message = "沒有此權限";
@@ -72,20 +84,34 @@ export function errorCodeToMessage(errorCode) {
             message = "使用者未登入";
             return message;
         case 9:
-            message = "登入失敗";
+            message = "登入失敗，請再試一次";
             return message;
         case 10:
-            message = "密碼輸入錯誤";
+            message = "新增失敗，請再試一次";
             return message;
         case 11:
-            message = "新增失敗";
+            message = "修改失敗，請再試一次";
             return message;
         case 12:
-            message = "修改失敗";
+            message = "刪除失敗，請再試一次";
             return message;
         case 13:
-            message = "刪除失敗";
+            message = "取得資料失敗，請再試一次";
+            return message;
+        case 14:
+            message = "資料已被異動";
+            return message;
+        case 15:
+            message = "超級管理員資料不得修改";
+            return message;
+        case 16:
+            message = "輸入的手機號碼已被註冊";
+            return message;
+        case 17:
+            message = "輸入的帳號已被註冊";
             return message;
         default:
+            message = "";
+            return message;
     }
 }
