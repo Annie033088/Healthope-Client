@@ -52,6 +52,9 @@ export const errorCodeDefine = {
 
     // 帳號重複
     DuplicateAccount: 17,
+
+    // (手機)已驗證
+    AlreadyVerify: 18,
 };
 
 //設定errorCode對應資料
@@ -110,6 +113,9 @@ export function errorCodeToMessage(errorCode) {
         case 17:
             message = "輸入的帳號已被註冊";
             return message;
+            case 18:
+                message = "已驗證，不需再驗證";
+                return message;
         default:
             message = "";
             return message;

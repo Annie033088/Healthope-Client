@@ -10,8 +10,10 @@ const axiosInstance = axios.create({
 // 添加請求攔截器
 axiosInstance.interceptors.request.use(
   config => {
-  // 在請求發送前做一些處理
-  console.log("post", JSON.stringify(config.data));
+    // 在請求發送前做一些處理
+    console.log("post ");
+    if (config.data) console.log(JSON.stringify(config.data))
+
     return config;
   },
   error => {
@@ -24,7 +26,7 @@ axiosInstance.interceptors.request.use(
 // 添加回應攔截器
 axiosInstance.interceptors.response.use(
   response => {
-  console.log("response", JSON.stringify(response.data));
+    console.log("response", JSON.stringify(response.data));
     // 在回應回來後做一些處理
     return response;
   },

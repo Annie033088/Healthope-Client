@@ -2,6 +2,7 @@ import VueRouter from "vue-router";
 // import Vue from 'vue';
 import HealthopeHome from '@/views/HealthopeHome';
 import HealthopeAddMember from '@/views/Member/HealthopeAddMember';
+import HealthopeMemberPhoneVerification from '@/views/Member/HealthopeMemberPhoneVerification';
 // import axios from 'axios';
 // import { errorCodeDefine } from '../utils/globalSetting';
 
@@ -17,6 +18,12 @@ const routes = [
         name: 'HealthopeAddMember',
         component: HealthopeAddMember,
         meta: { requireAuth: null } 
+    },
+    {
+        path: '/member/phoneVerification',
+        name: 'HealthopeMemberPhoneVerification',
+        component: HealthopeMemberPhoneVerification,
+        meta: { requireAuth: 'login' } 
     },
     {
         path: '*',

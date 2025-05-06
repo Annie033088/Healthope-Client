@@ -29,7 +29,7 @@ a {
 }
 
 footer {
-   margin-left: 200px;
+   /* margin-left: 200px; */
   text-align: center;
   margin-top: 5%;
 }

@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === 'development') {
 
 Vue.prototype.$errorCodeDefine = errorCodeDefine;
 Vue.prototype.$errorCodeToMessage = errorCodeToMessage;
+Vue.prototype.$loginFlag = false;
 Vue.prototype.$notificationBox = Vue.observable({
   notificationBoxFlag: false,
   notificationBoxTitle: "",

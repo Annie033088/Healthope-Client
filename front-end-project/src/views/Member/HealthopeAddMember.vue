@@ -1,6 +1,6 @@
 <template>
   <div class="addContainer">
-    <SubTitleCard :text="titleText"></SubTitleCard>
+    <SubTitleCard text="帳號註冊"></SubTitleCard>
     <div class="inputBox" v-if="step === 1">
       <div class="inputContainer">
         <InputSpan
@@ -43,27 +43,7 @@
         <h2>✅ 註冊成功</h2>
       </div>
       <div class="successBtnContainer">
-      <BtnNormal text="返回主頁"></BtnNormal>
-      <BtnConfirm text="手機簡訊驗證"></BtnConfirm>
-      </div>
-    </div>
-    <div class="inputBox" v-if="step === 3">
-      <div class="OTPContainer">
-        <label class="label">請輸入驗證碼：</label>
-        <div class="OTPInputContainer">
-          <input v-model="otpCode" />
-          <BtnNormal
-            :text="cooldownFlag ? `請等待 ${remainingTime} 秒` : '重新發送 OTP'"
-            :disabled="cooldownFlag"
-            @click="sendOTP(null)"
-          ></BtnNormal>
-        </div>
-      </div>
-      <div class="hintContainer">
-        <span v-if="verifyFail" class="hintSpan">{{ this.hintText }}</span>
-      </div>
-      <div class="btnContainer">
-        <BtnConfirm @click="addMember" text="確認"></BtnConfirm>
+        <BtnConfirm text="手機簡訊驗證" @click="goSendOtp"></BtnConfirm>
       </div>
     </div>
   </div>
@@ -73,7 +53,6 @@
 <script>
 import InputSpan from "@/components/Input/InputSpan";
 import BtnConfirm from "@/components/Btn/BtnConfirm";
-import BtnNormal from "@/components/Btn/BtnNormal";
 import SubTitleCard from "@/components/Card/SubTitleCard";
 
 export default {
@@ -81,7 +60,6 @@ export default {
   components: {
     InputSpan,
     BtnConfirm,
-    BtnNormal,
     SubTitleCard,
   },
   props: {
@@ -97,90 +75,12 @@ export default {
       phone: "",
       email: "",
       verifyFail: false,
-      step: 2,
-      otpCode: "",
-      remainingTime: 0,
-      cooldownSeconds: 180,
-      storageKey: "otpCooldownExpire",
+      step: 1,
     };
   },
   methods: {
-    async sendOTP(addMemberDto) {
-      try {
-        const expireTimeStr = localStorage.getItem(this.storageKey);
-        if (expireTimeStr) {
-          const expireTime = new Date(expireTimeStr);
-          const now = new Date();
-          const remainingTime = Math.floor((expireTime - now) / 1000);
-
-          if (remainingTime > 0) {
-            // 冷卻中，不發送請求
-            alert(`請等待 ${remainingTime} 秒後再試`);
-            return;
-          } else {
-            localStorage.removeItem(this.storageKey); // 清除過期紀錄
-          }
-        }
-
-        // 假設你呼叫的是這個 API，它會回傳類似 { expiresAt: "2025-05-05T10:30:00Z" }
-        const response = await this.$axios.post(
-          "/api/Member/GetOTPAtAddMember",
-          addMemberDto
-        );
-
-        const serverTime = new Date(response.data.ExpireTime); // 解析 ISO 字串
-        const now = new Date();
-        const remainingSeconds = Math.floor((serverTime - now) / 1000);
-
-        if (remainingSeconds > 0) {
-          localStorage.setItem(this.storageKey, serverTime.toISOString());
-          this.startCooldown(remainingSeconds);
-        } else {
-          // 添加監聽器，查看彈窗是否被按確認鍵
-          this.unwatchFlag = this.$watch(
-            "notificationBoxConfirmFlag",
-            (newVal) => {
-              if (newVal) {
-                let redirectRoute = null;
-                this.$emit("afterConfirmEvent", redirectRoute);
-                this.unwatchFlag(); // 移除監聽
-                this.unwatchFlag = null;
-              }
-            }
-          );
-
-          // 設定彈窗資料
-          this.$notificationBox.notificationBoxFlag = true;
-          this.$notificationBox.notificationBoxTitle =
-            "發生錯誤! 伺服器回傳的過期時間已過期";
-          this.$notificationBox.notificationBoxErrorCode = 0;
-        }
-      } catch (error) {
-        console.error("發送 OTP 時發生錯誤：", error);
-      }
-    },
-    startCooldown(seconds) {
-      this.remainingTime = seconds;
-      this.timer = setInterval(() => {
-        this.remainingTime--;
-        if (this.remainingTime <= 0) {
-          clearInterval(this.timer);
-          localStorage.removeItem(this.storageKey);
-        }
-      }, 1000);
-    },
-    checkCooldown() {
-      const expire = localStorage.getItem(this.storageKey);
-      if (!isNaN(expire)) {
-        const now = Date.now();
-        const remainingTime = Math.floor((expire - now) / 1000);
-        if (remainingTime > 0) {
-          this.step = 2;
-          this.startCooldown(remainingTime);
-        } else {
-          localStorage.removeItem(this.storageKey);
-        }
-      }
+    async goSendOtp() {
+      this.$router.push("/member/phoneVerification");
     },
     async addMember() {
       // 帳號密碼驗證用的正規表達式 ( 8~20 位英數字)
@@ -237,7 +137,7 @@ export default {
 
         // post後回傳
         const response = await this.$axios.post(
-          "/api/Member/AddMember",
+          "/api/AccountAccess/AddMember",
           addMemberDto
         );
 
@@ -287,7 +187,7 @@ export default {
 
       // [^\s@] 代表至少一個不是空白或 @ 的字元
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // EX: abc@ewq.ee
-      if (email.length > 254) return false;
+      if (email.length > 254) return false; // 規定總長最長 254
 
       const parts = email.split("@");
       if (parts.length !== 2) return false;
@@ -296,7 +196,7 @@ export default {
 
       if (
         localPart.length < 3 || // 建議最少 3 字元
-        localPart.length > 64 || // 最長 64
+        localPart.length > 64 || // 規定 @以前 最長 64
         domain.length > 251 // 不得超過 254 - 3
       ) {
         return false;
@@ -305,28 +205,11 @@ export default {
       return emailRegex.test(email);
     },
   },
-  computed: {
-    titleText() {
-      if (this.step === 1) {
-        return "新建帳號";
-      }
-
-      if (this.step === 2) {
-        return "OTP 驗證";
-      } else return "";
-    },
-    cooldownFlag() {
-      return this.remainingTime > 0;
-    },
-  },
-  mounted() {
-    this.checkCooldown();
-  },
 };
 </script>
 
 <style scoped>
-.addContainer{
+.addContainer {
   width: 100%;
 }
 
@@ -369,34 +252,6 @@ export default {
   }
 }
 
-.OTPContainer {
-  width: 100%;
-  max-width: 290px;
-  margin-top: 5%;
-}
-
-.OTPInputContainer {
-  margin-top: 8px;
-  gap: 0.5rem;
-  display: flex;
-  width: 400px;
-  flex-wrap: wrap;
-}
-
-.OTPInputContainer input {
-  border-radius: 0.5rem;
-  padding: 0.7rem 0.75rem;
-  border: none;
-  width: 50%;
-  background-color: white;
-  outline: 2px solid #efefef;
-  font-size: 15px;
-}
-
-.OTPInputContainer input:focus {
-  outline: 2px solid #707070;
-}
-
 .successBox {
   width: 100%;
   display: flex;
@@ -415,6 +270,6 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 15px;
-  gap: 10px;
+  margin-left: 15px;
 }
 </style>
