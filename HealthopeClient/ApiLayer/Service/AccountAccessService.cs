@@ -12,7 +12,7 @@ namespace ApiLayer.Service
 {
     public class AccountAccessService : IAccountAccessService
     {
-        private readonly string memberSessionKey = "memberSessionKey";
+        private readonly string memberSessionKey = "MemberSessionKey";
         private readonly IMemberRepository memberRepository;
         private readonly IRedisService redisService;
         private readonly ISessionService sessionService;
@@ -53,9 +53,13 @@ namespace ApiLayer.Service
 
                 ErrorCodeDefine errorCode = (ErrorCodeDefine)errorCodeNumber;
 
+
                 // 註冊成功順便登入
                 if (errorCode == ErrorCodeDefine.Success)
                 {
+                    // 例外狀況 防護一下 ( 成功但沒有取得註冊者 Id 的情況 )
+                    if (memberId == -1) return ErrorCodeDefine.ServerError;
+
                     // asp.net 儲存會話資料
                     sessionService.SaveSession(memberSessionKey, new MemberSession() { MemberId = memberId });
 

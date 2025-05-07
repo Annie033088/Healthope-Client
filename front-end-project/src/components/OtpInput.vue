@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      hintText: "請輸入 6 位數字驗證碼",
+      hintText: "",
       invalidInput: false,
       otpCode: "",
       remainingSecond: 0,
@@ -59,43 +59,30 @@ export default {
   methods: {
     async sendOtp() {
       try {
+        // 剩餘冷卻時間>0 =>回傳
+        if (this.cooldownFlag) return;
         // 假設呼叫的是這個 API，會回傳類似 { RemainingSecond: 180 ( 單位是 s ) }
         const response = await this.$axios.post(
           "/api/Member/GetOtpAtVerifyPhone"
         );
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
-          const remainingSecond = response.data.RemainingSecond;
+          const remainingSecond = response.data.ApiDataObject.RemainingSecond;
 
-          if (remainingSecond > 0) {
-            this.startCooldown(remainingSecond);
-          } else {
-            // 添加監聽器，查看彈窗是否被按確認鍵
-            this.unwatchFlag = this.$watch(
-              "notificationBoxConfirmFlag",
-              (newVal) => {
-                if (newVal) {
-                  let redirectRoute = "/";
-                  this.$emit("afterConfirmEvent", redirectRoute);
-                  this.unwatchFlag(); // 移除監聽
-                  this.unwatchFlag = null;
-                }
-              }
-            );
-
-            // 設定彈窗資料
-            this.$notificationBox.notificationBoxFlag = true;
-            this.$notificationBox.notificationBoxTitle =
-              "發生錯誤! 伺服器回傳的過期時間已過期";
-            this.$notificationBox.notificationBoxErrorCode = 0;
-            return;
-          }
+          if (remainingSecond > 0) this.startCooldown(remainingSecond);
         } else if (
           response.data.ErrorCode === this.$errorCodeDefine.AlreadyVerify
         ) {
           this.step = 2;
           return;
-        } else {
+        } 
+        else if(response.data.ErrorCode === this.$errorCodeDefine.OtpCooldown){
+        this.invalidInput = true;
+        this.hintText = "距上次發送 OTP 未達 3 分鐘";
+          const remainingSecond = response.data.ApiDataObject.RemainingSecond;
+          if (remainingSecond > 0) this.startCooldown(remainingSecond);
+        }
+        else {
           // 添加監聽器，查看彈窗是否被按確認鍵
           this.unwatchFlag = this.$watch(
             "notificationBoxConfirmFlag",
@@ -124,12 +111,14 @@ export default {
       if (this.otpCode.length !== 6) {
         this.invalidInput = true;
         this.otpCode = "";
+        this.hintText = "請輸入 6 位數字驗證碼";
         return;
       }
 
       if (isNaN(this.otpCode.trim())) {
         this.invalidInput = true;
         this.otpCode = "";
+        this.hintText = "請輸入 6 位數字驗證碼";
         return;
       }
 
@@ -149,11 +138,25 @@ export default {
 
         if (response.data.ErrorCode === this.$errorCodeDefine.Success) {
           this.step = 2;
+          const remainingSecond = response.data.ApiDataObject.RemainingSecond;
+          if (remainingSecond > 0) this.startCooldown(remainingSecond);
           return;
         } else if (
           response.data.ErrorCode === this.$errorCodeDefine.AlreadyVerify
         ) {
           this.step = 2;
+          return;
+        } else if (
+          response.data.ErrorCode === this.$errorCodeDefine.VerifyFail
+        ) {
+          this.invalidInput = true;
+          this.otpCode = "";
+
+          // OTP 過時
+          if (response.data.ApiDataObject.RemainingSecond == 0)
+            this.hintText = "OTP 已過時，請重新發送";
+          else this.hintText = "驗證失敗";
+
           return;
         } else {
           // 添加監聽器，查看彈窗是否被按確認鍵
@@ -180,11 +183,16 @@ export default {
       }
     },
     startCooldown(seconds) {
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
+
       this.remainingSecond = seconds;
       this.timer = setInterval(() => {
         this.remainingSecond--;
         if (this.remainingSecond <= 0) {
           clearInterval(this.timer);
+          this.timer = null;
         }
       }, 1000);
     },

@@ -3,8 +3,7 @@ import Vue from 'vue';
 
 // 創建 axios 實例
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080',
-  timeout: 1000, // 設置請求超時
+ // timeout: 1000, // 設置請求超時
 });
 
 // 添加請求攔截器

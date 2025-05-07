@@ -5,6 +5,7 @@ using System.Web;
 
 namespace ApiLayer.Models.Member
 {
+    [Serializable]
     public class MemberSession
     {
         /// <summary>

@@ -193,12 +193,16 @@
     </Compile>
     <Compile Include="Interface\IAccountAccessService.cs" />
     <Compile Include="Interface\IMemberService.cs" />
+    <Compile Include="Interface\IOtpService.cs" />
     <Compile Include="Interface\IRedisService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Models\ErrorCodeDefine.cs" />
     <Compile Include="Models\AccountAccess\RequestAccounAccessDto\RequestAddMemberDto.cs" />
     <Compile Include="Models\Member\MemberLoginRedis.cs" />
     <Compile Include="Models\Member\MemberSession.cs" />
+    <Compile Include="Models\Member\ReponseMemberDto\ResponseOtpRemainingTime.cs" />
+    <Compile Include="Models\Member\RequestMemberDto\RequestVerifyOtpDto.cs" />
+    <Compile Include="Models\ThirdParty\OtpSendResponse.cs" />
     <Compile Include="Models\ThirdParty\OtpVerifyResponse.cs" />
     <Compile Include="Models\ResultResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -222,20 +226,20 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="wwwroot\css\app.2eb0d3aa.css" />
+    <Content Include="wwwroot\css\app.9670a3fc.css" />
+    <Content Include="wwwroot\img\HealthopeLogoClient.277aed21.png" />
     <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\js\app.03a875e5.js" />
-    <Content Include="wwwroot\js\app.03a875e5.js.map" />
-    <Content Include="wwwroot\js\chunk-vendors.aee3414f.js" />
-    <Content Include="wwwroot\js\chunk-vendors.aee3414f.js.map" />
+    <Content Include="wwwroot\js\app.3e613332.js" />
+    <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js" />
+    <Content Include="wwwroot\js\chunk-vendors.7a89e68d.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\Member\RequestMemberDto\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config" />
     <None Include="packages.config" />
+    <Content Include="wwwroot\js\app.3e613332.js.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainLayer\DomainLayer.csproj">

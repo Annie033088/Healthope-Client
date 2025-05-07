@@ -19,7 +19,7 @@ namespace ApiLayer.Filters
         {
             try
             {
-          string memberSessionKey = "memberSessionKey";
+          string memberSessionKey = "MemberSessionKey";
                 MemberSession memberSession = sessionService.GetSession<MemberSession>(memberSessionKey);
 
                 if (memberSession == null)
@@ -33,6 +33,16 @@ namespace ApiLayer.Filters
                 //取得 redis 的 admin 資料(包括 sessionId 跟 errorCode)
                 string redisKey = "MemberLogin" + memberSession.MemberId;
                 MemberLoginRedis memberRedis = redisService.GetValue<MemberLoginRedis>(redisKey);
+
+                // redis 不見了
+                if (memberRedis == null)
+                {
+                    ResultResponse response = new ResultResponse() { ErrorCode = ErrorCodeDefine.UserNotLogin };
+                    actionContext.Response = actionContext.Request.CreateResponse(response);
+                    // 清掉 asp.net 會話相關資料
+                    sessionService.ClearSerssion();
+                    return;
+                }
 
                 //判斷現 sessionId 是否相同, 不同的話清除 session
                 if (memberRedis.SessionId != sessionService.GetSessionId())

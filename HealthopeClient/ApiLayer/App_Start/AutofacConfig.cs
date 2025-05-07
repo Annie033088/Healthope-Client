@@ -19,10 +19,13 @@ namespace ApiLayer.App_Start
 
             //註冊 service 跟 repository
             //builder.RegisterType<LoginService>().As<ILoginService>().InstancePerRequest();
-            //builder.RegisterType<TaskService>().As<ITaskService>().InstancePerRequest();
             //builder.RegisterType<SessionService>().As<ISessionService>().InstancePerRequest();
-            builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
+            builder.RegisterType<SessionService>().As<ISessionService>().InstancePerLifetimeScope();
+            builder.RegisterType<RedisService>().As<IRedisService>().InstancePerLifetimeScope();
             builder.RegisterType<AccountAccessService>().As<IAccountAccessService>().InstancePerRequest();
+            builder.RegisterType<MemberService>().As<IMemberService>().InstancePerRequest();
+            builder.RegisterType<MemberRepository>().As<IMemberRepository>().InstancePerRequest();
+            builder.RegisterType<OtpService>().As<IOtpService>().InstancePerRequest();
 
             // 註冊 Redis 連線為 Singleton
             builder.Register(c =>

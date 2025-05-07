@@ -55,6 +55,12 @@ export const errorCodeDefine = {
 
     // (手機)已驗證
     AlreadyVerify: 18,
+
+    // OTP 還在冷卻時間不可發送
+    OtpCooldown : 19,
+
+    // 驗證失敗
+    VerifyFail : 20,
 };
 
 //設定errorCode對應資料

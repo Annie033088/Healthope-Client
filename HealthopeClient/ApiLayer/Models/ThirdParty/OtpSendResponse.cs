@@ -5,9 +5,11 @@ using System.Web;
 
 namespace ApiLayer.Models.ThirdParty
 {
-    public class OtpVerifyResponse
+    public class OtpSendResponse
     {
         public string ReferenceId { get; set; }
         public bool Status { get; set; }
+        public string Phone { get; set; }
+
     }
 }

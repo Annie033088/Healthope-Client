@@ -9,56 +9,76 @@ using System.Web;
 using System.Collections;
 using Newtonsoft.Json;
 using ApiLayer.Models.ThirdParty;
+using Pipelines.Sockets.Unofficial.Arenas;
+using ApiLayer.Interface;
 
 namespace ApiLayer.Service
 {
     // 參考文件: https://developer.telesign.com/enterprise/docs/verify-api-verify-with-telesign-code
-    public class OtpService
+    public class OtpService:IOtpService
     {
-        private readonly string customerId = "CUSTOMER_ID"; // 申請時的帳號 Id
-        private readonly string apiKey = "API_KEY"; // 申請時拿到的 Key
+        //private readonly string customerId = "CUSTOMER_ID"; // 申請時的帳號 Id
+        //private readonly string apiKey = "API_KEY"; // 申請時拿到的 Key
         private readonly HttpClient httpClient;
 
         public OtpService()
         {
             httpClient = new HttpClient();
-            string authString = $"{customerId}:{apiKey}";
-            byte[] authBytes = Encoding.ASCII.GetBytes(authString);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
+            //string authString = $"{customerId}:{apiKey}";
+            //byte[] authBytes = Encoding.ASCII.GetBytes(authString);
+            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authBytes));
         }
 
-        public string SendOtp(string phoneNumber)
+        // TODO: 單元測試
+        public OtpSendResponse SendOtp(string phoneNumber, string expiry)
         {
-            string url = "https://rest-api.telesign.com/v1/verify/sms";
-            FormUrlEncodedContent content = new FormUrlEncodedContent(new[]
+            try
             {
-                new KeyValuePair<string, string>("phone_number", phoneNumber),
-                new KeyValuePair<string, string>("language", "zh-Hant"),
-                new KeyValuePair<string, string>("ttl", "180") // 3 分鐘有效
-            });
+                string url = "https://localhost:44395/Otp/SendOtp";
+                Dictionary<string, string> dictionaryContent = new Dictionary<string, string>
+                {
+                    { "PhoneNumber", phoneNumber },
+                    { "TTL", expiry }
+                };
+                string json = JsonConvert.SerializeObject(dictionaryContent);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = httpClient.PostAsync(url, content).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = httpClient.PostAsync(url, content).Result;
+                string responseString = response.Content.ReadAsStringAsync().Result;
 
-            return responseString;
+                OtpSendResponse otpResponse = JsonConvert.DeserializeObject<OtpSendResponse>(responseString);
+                return otpResponse;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public bool verifyOtp(string referenceId, string otpCode)
+        // TODO: 單元測試
+        public bool VerifyOtp(string referenceId, string otpCode)
         {
-            Dictionary<string, string> payload = new Dictionary<string, string>
+            try
             {
-                { "reference_id", referenceId },
-                { "verify_code", otpCode }
-            };
-            string json = JsonConvert.SerializeObject(payload);
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = httpClient.PostAsync("https://rest-api.telesign.com/v1/verify/code", content).Result;
-            string result = response.Content.ReadAsStringAsync().Result;
-            OtpVerifyResponse responseObj = JsonConvert.DeserializeObject<OtpVerifyResponse>(result);
+                string url = "https://localhost:44395/Otp/VerifyOtp";
+                Dictionary<string, string> dictionaryContent = new Dictionary<string, string>
+                {
+                    { "ReferenceId", referenceId },
+                    { "OtpCode", otpCode }
+                };
+                string json = JsonConvert.SerializeObject(dictionaryContent);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            if (responseObj.status.code == 300) return true;
+                HttpResponseMessage response = httpClient.PostAsync(url, content).Result;
+                string responseString = response.Content.ReadAsStringAsync().Result;
+                OtpVerifyResponse responseObj = JsonConvert.DeserializeObject<OtpVerifyResponse>(responseString);
 
-            return false;
+                return responseObj.Status;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

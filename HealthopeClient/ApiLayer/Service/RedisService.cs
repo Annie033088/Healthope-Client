@@ -19,6 +19,9 @@ namespace ApiLayer.Service
         /// </summary>
         public void SetValue<T>(string key, T value, TimeSpan? expiry = null)
         {
+            // 預設 12 小時過期
+            if (expiry == null) { expiry = TimeSpan.FromHours(12); }
+            
             IDatabase db = redis.GetDatabase();
 
             // 將物件轉換為 JSON 字串
@@ -56,6 +59,15 @@ namespace ApiLayer.Service
         {
             IDatabase db = redis.GetDatabase();
             return db.KeyExists(key);
+        }
+
+        /// <summary>
+        /// 取得剩餘時間
+        /// </summary>
+        public TimeSpan? GetRemainingTime(string key)
+        {
+            IDatabase db = redis.GetDatabase();
+            return db.KeyTimeToLive(key);
         }
     }
 }

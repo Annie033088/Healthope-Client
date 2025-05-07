@@ -23,5 +23,10 @@ namespace ApiLayer.Interface
         /// 檢查 key 是否存在
         /// </summary>
         bool KeyExist(string key);
+
+        /// <summary>
+        /// 取得剩餘時間
+        /// </summary>
+        TimeSpan? GetRemainingTime(string key);
     }
 }
