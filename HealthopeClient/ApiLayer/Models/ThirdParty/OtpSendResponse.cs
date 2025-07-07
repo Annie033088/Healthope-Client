@@ -10,6 +10,5 @@ namespace ApiLayer.Models.ThirdParty
         public string ReferenceId { get; set; }
         public bool Status { get; set; }
         public string Phone { get; set; }
-
     }
 }

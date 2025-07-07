@@ -57,10 +57,10 @@ export const errorCodeDefine = {
     AlreadyVerify: 18,
 
     // OTP 還在冷卻時間不可發送
-    OtpCooldown : 19,
+    OtpCooldown: 19,
 
     // 驗證失敗
-    VerifyFail : 20,
+    VerifyFail: 20,
 };
 
 //設定errorCode對應資料
@@ -119,9 +119,15 @@ export function errorCodeToMessage(errorCode) {
         case 17:
             message = "輸入的帳號已被註冊";
             return message;
-            case 18:
-                message = "已驗證，不需再驗證";
-                return message;
+        case 18:
+            message = "已驗證，不需再驗證";
+            return message;
+        case 19:
+            message = "OTP 還在冷卻時間不可發送";
+            return message;
+        case 20:
+            message = "驗證失敗";
+            return message;
         default:
             message = "";
             return message;

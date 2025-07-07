@@ -19,6 +19,7 @@ namespace ApiLayer.Controllers.api
             this.accountAccessService = accountAccessService;
         }
 
+        // TODO: 將 Phone 改成 int
         /// <summary>
         /// 新增會員
         /// </summary>

@@ -20,6 +20,6 @@
         /// <summary>
         /// 手機
         /// </summary>
-        public string Phone { get; set; }
+        public int Phone { get; set; }
     }
 }

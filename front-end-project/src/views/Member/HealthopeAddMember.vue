@@ -4,27 +4,32 @@
     <div class="inputBox" v-if="step === 1">
       <div class="inputContainer">
         <InputSpan
+          class="inputSpan"
           labelText="帳號"
           v-model="account"
           :required="true"
         ></InputSpan>
         <InputSpan
+          class="inputSpan"
           labelText="手機號碼"
           v-model="phone"
           :required="true"
         ></InputSpan>
         <InputSpan
+          class="inputSpan"
           labelText="信箱"
           v-model="email"
           :required="false"
         ></InputSpan>
         <InputSpan
+          class="inputSpan"
           labelText="密碼"
           v-model="pwd"
           inputType="password"
           :required="true"
         ></InputSpan>
         <InputSpan
+          class="inputSpan"
           labelText="再輸入一次密碼"
           v-model="pwdAgain"
           inputType="password"
@@ -100,9 +105,10 @@ export default {
       }
 
       // 手機驗證用的正規表達式，僅限台灣 ( 09 開頭，後面8碼 )
-      const phoneRegex = /^09\d{8}$/;
+      let phone = Number(this.phone);
+      const phoneRegex = /^[9]\d{8}$/;
 
-      if (!phoneRegex.test(this.phone)) {
+      if (!phoneRegex.test(phone)) {
         this.hintText = "請輸入正確的手機號碼（例如：09xxxxxxxx）";
         this.verifyFail = true;
         return;
@@ -130,7 +136,7 @@ export default {
         // 傳輸資料
         const addMemberDto = {
           Account: this.account,
-          Phone: this.phone,
+          Phone: phone,
           Email: this.email,
           Pwd: this.pwd,
         };
@@ -226,13 +232,16 @@ export default {
   justify-content: center;
 }
 
+.inputSpan {
+  margin-top: 3%;
+}
+
 .hintContainer,
 .btnContainer {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   margin-top: 15px;
-  margin-left: 55px;
   justify-content: center;
 }
 

@@ -58,7 +58,6 @@ export default {
 
 <style scoped>
 .inputSpan {
-  margin-top: 5%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -68,12 +67,10 @@ export default {
 .inputSpan input {
   border-radius: 0.5rem;
   padding: 0.7rem 0.75rem;
-  width: 100%;
   border: none;
   background-color: white;
   outline: 2px solid #efefef;
   font-size: 15px;
-  margin-left: 15px;
 }
 
 .inputSpan input:focus {
@@ -81,6 +78,7 @@ export default {
 }
 
 .labelRow{
+  margin-left: -15px;
   display: flex;
 }
 </style>

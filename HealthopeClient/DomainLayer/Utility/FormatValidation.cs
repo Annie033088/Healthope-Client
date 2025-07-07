@@ -58,10 +58,10 @@ namespace DomainLayer.Utility
         /// <summary>
         /// 驗證有效手機號碼
         /// </summary>
-        public bool ValidPhone(string phone)
+        public bool ValidPhone(int phone)
         {
-            string phoneRegex = "^09\\d{8}$"; // 09 開頭, 加後 8 位數
-            return Regex.IsMatch(phone, phoneRegex);
+            string phoneRegex = "^9\\d{8}$"; // 9 開頭, 加後 8 位數
+            return Regex.IsMatch(phone.ToString(), phoneRegex);
         }
     }
 }

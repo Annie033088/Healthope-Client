@@ -49,6 +49,7 @@ namespace ApiLayer.Service
                 // 號碼已驗證 或其他狀況
                 if (errorCode != ErrorCodeDefine.Success) return (errorCode, 0);
 
+                // TODO: 把 REDIS 往前移(讓攻擊者無法連續輸入)
                 // 是否還在冷卻時間?
                 string phoneStr = "0" + phone;
                 string key = $"local:phoneOtp:phone:{phoneStr}";
@@ -80,7 +81,7 @@ namespace ApiLayer.Service
                 throw;
             }
         }
-
+        // TODO: 計算 OTP 失敗次數，以防攻擊者惡意發送多次請求
         // TODO: 單元測試
         public (ErrorCodeDefine, int ttl) VerifyPhone(RequestVerifyOtpDto verifyPhoneDto)
         {
